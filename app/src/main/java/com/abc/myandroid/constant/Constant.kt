@@ -9,13 +9,13 @@ object Constant {
     /**
      * url key
      */
-    const val CONTENT_URL_KEY = "url"
+    const val URL_KEY = "url"
     /**
      * title key
      */
-    const val CONTENT_TITLE_KEY = "title"
+    const val TITLE_KEY = "title"
     /**
      * id key
      */
-    const val CONTENT_ID_KEY = "id"
+    const val ID_KEY = "id"
 }
