@@ -4,19 +4,13 @@ import android.os.Bundle
 import android.util.SparseArray
 import android.view.KeyEvent
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import butterknife.BindView
-import butterknife.ButterKnife
-import butterknife.Unbinder
 import com.abc.myandroid.R
 import com.abc.myandroid.ext.showToast
 import com.abc.myandroid.ui.fragment.HomeFragment
 import com.abc.myandroid.ui.fragment.SquareFragment
-import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import q.rorbin.badgeview.QBadgeView
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +27,6 @@ class MainActivity : AppCompatActivity() {
     private var mLastFragment: Fragment? = null
     private var mLastIndex = -1
     private var mExitTime: Long = 0
-    var mBinder: Unbinder? = null
 
 
     var mBottomNavigationView: BottomNavigationView? = null
@@ -53,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBinder = ButterKnife.bind(this)
         mBottomNavigationView =  findViewById(R.id.navigation_bottom)
         initBottomNavigation()
         // 判断当前是recreate还是新启动
@@ -160,21 +152,21 @@ class MainActivity : AppCompatActivity() {
      * @param index      当前bottom index
      * @param showNumber 显示的未读数值
      */
-    private fun showBadgeView(index: Int, showNumber: Int) {
-            val menuView = mBottomNavigationView!!.getChildAt(0) as BottomNavigationMenuView
-            if (index < menuView.childCount) {
-                val view = menuView.getChildAt(index)
-                val icon = view.findViewById<View>(com.google.android.material.R.id.icon)
-                val iconWidth = icon.width
-                val tabWidth = view.width / 2
-                val spaceWidth = tabWidth - iconWidth
-                val qBadgeView = QBadgeView(this)
-                qBadgeView.bindTarget(view)
-                    .setGravityOffset((spaceWidth + 50).toFloat(), 13f, false).badgeNumber = showNumber
-                qBadgeView.setOnDragStateChangedListener { dragState, badge, targetView -> qBadgeView.clearAnimation() }
-            }
-
-    }
+//    private fun showBadgeView(index: Int, showNumber: Int) {
+//            val menuView = mBottomNavigationView!!.getChildAt(0) as BottomNavigationMenuView
+//            if (index < menuView.childCount) {
+//                val view = menuView.getChildAt(index)
+//                val icon = view.findViewById<View>(com.google.android.material.R.id.icon)
+//                val iconWidth = icon.width
+//                val tabWidth = view.width / 2
+//                val spaceWidth = tabWidth - iconWidth
+//                val qBadgeView = QBadgeView(this)
+//                qBadgeView.bindTarget(view)
+//                    .setGravityOffset((spaceWidth + 50).toFloat(), 13f, false).badgeNumber = showNumber
+//                qBadgeView.setOnDragStateChangedListener { dragState, badge, targetView -> qBadgeView.clearAnimation() }
+//            }
+//
+//    }
 
     override fun onDestroy() {
         super.onDestroy()

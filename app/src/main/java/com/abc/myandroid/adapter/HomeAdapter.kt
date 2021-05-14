@@ -1,88 +1,66 @@
 package com.abc.myandroid.adapter
 
-import android.content.Context
 import android.text.Html
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
 import com.abc.myandroid.R
 import com.abc.myandroid.mvp.model.bean.Article
-import java.util.ArrayList
+import com.abc.myandroid.utils.ImageLoader
+import com.chad.library.adapter.base.BaseQuickAdapter
+import com.chad.library.adapter.base.module.LoadMoreModule
+import com.chad.library.adapter.base.viewholder.BaseViewHolder
 
-class HomeAdapter(private val articleList: MutableList<Article>) : RecyclerView.Adapter<HomeAdapter.ViewHolder>() {
-    private val mContext: Context? = null
-    private val mArticleList: MutableList<Article> = ArrayList()
-    private var mHeaderView: View? = null
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val mArticleAuthor: TextView = view.findViewById(R.id.item_home_author)
-        val mArticleContent: TextView = view.findViewById(R.id.item_home_content)
-        val mArticleType: TextView = view.findViewById(R.id.item_article_type)
-        val mArticleDate: TextView = view.findViewById(R.id.item_home_date)
-        val mCollectView: ImageView = view.findViewById(R.id.item_list_collect)
-        val mNewView: TextView = view.findViewById(R.id.item_home_new)
-        val mQuestionView: TextView = view.findViewById(R.id.item_home_question)
-        val mTopView: TextView = view.findViewById(R.id.item_home_top_article)
+class HomeAdapter(articleList: MutableList<Article>) : BaseQuickAdapter<Article, BaseViewHolder>(R.layout.item_home_list, articleList) ,
+    LoadMoreModule {
 
-    }
+    override fun convert(helper: BaseViewHolder, item: Article) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_home_list, parent, false)
-        return ViewHolder(view)
-    }
-
-
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        if (getItemViewType(position) == TYPE_HEADER) {
-            return
-        }
-        val realPosition = getRealPosition(holder)
-        val articleBean = articleList[realPosition]
-
-            holder.mArticleContent.text = articleBean.title
-
-        if (articleBean.author != "") {
-            holder.mArticleAuthor.text = String.format(
-                mContext!!.resources.getString(R.string.article_author),
-                articleBean.author
+        val authorStr = if (item.author.isNotEmpty()) item.author else item.shareUser
+        helper.setText(R.id.tv_article_title, Html.fromHtml(item.title))
+            .setText(R.id.tv_article_author, authorStr)
+            .setText(R.id.tv_article_date, item.niceDate)
+            .setImageResource(R.id.iv_like,
+                if (item.collect) R.drawable.ic_like else R.drawable.ic_like_not
             )
+
+        val chapterName = when {
+            item.superChapterName.isNotEmpty() and item.chapterName.isNotEmpty() ->
+                "${item.superChapterName} / ${item.chapterName}"
+            item.superChapterName.isNotEmpty() -> item.superChapterName
+            item.chapterName.isNotEmpty() -> item.chapterName
+            else -> ""
+        }
+        helper.setText(R.id.tv_article_chapterName, chapterName)
+        if (item.envelopePic.isNotEmpty()) {
+            helper.getView<ImageView>(R.id.iv_article_thumbnail)
+                .visibility = View.VISIBLE
+            context.let {
+                ImageLoader.load(it, item.envelopePic, helper.getView(R.id.iv_article_thumbnail))
+            }
         } else {
-            holder.mArticleAuthor.text = String.format(
-                mContext!!.resources.getString(R.string.article_author),
-                articleBean.shareUser
-            )
+            helper.getView<ImageView>(R.id.iv_article_thumbnail)
+                .visibility = View.GONE
         }
-        holder.mArticleDate.text = articleBean.niceDate
-        val category = String.format(
-            mContext.resources.getString(R.string.article_category),
-            articleBean.superChapterName, articleBean.chapterName
-        )
-        holder.mArticleType.text = String.format(category, Html.FROM_HTML_MODE_COMPACT)
-        if (articleBean.top == "1") {
-            holder.mTopView.visibility = View.VISIBLE
+        val tv_fresh = helper.getView<TextView>(R.id.tv_article_fresh)
+        if (item.fresh) {
+            tv_fresh.visibility = View.VISIBLE
+        } else {
+            tv_fresh.visibility = View.GONE
         }
-        if (articleBean.fresh) {
-            holder.mNewView.visibility = View.VISIBLE
+        val tv_top = helper.getView<TextView>(R.id.tv_article_top)
+        if (item.top == "1") {
+            tv_top.visibility = View.VISIBLE
+        } else {
+            tv_top.visibility = View.GONE
         }
-        holder.mQuestionView.visibility = View.VISIBLE
-        holder.mQuestionView.text = articleBean.superChapterName
-
-        holder.itemView.setOnClickListener { view: View? ->
-
-        }
-        holder.mCollectView.setOnClickListener { view: View? ->
-
+        val tv_article_tag = helper.getView<TextView>(R.id.tv_article_tag)
+        if (item.tags.size > 0) {
+            tv_article_tag.visibility = View.VISIBLE
+            tv_article_tag.text = item.tags[0].name
+        } else {
+            tv_article_tag.visibility = View.GONE
         }
     }
-    private fun getRealPosition(articleHolder: ViewHolder): Int {
-        val position = articleHolder.layoutPosition
-        return if (mHeaderView == null) position else position - 1
+
     }
-    companion object {
-        private const val TYPE_HEADER = 0
-    }
-    override fun getItemCount() = articleList.size
-}
