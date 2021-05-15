@@ -11,9 +11,6 @@ import com.bumptech.glide.request.RequestOptions
 
 object ImageLoader {
 
-    // 1.开启无图模式 2.非WiFi环境 不加载图片
-//    private val isLoadImage = !SettingUtil.getIsNoPhotoMode() || NetWorkUtil.isWifi(App.context)
-
     /**
      * 加载图片
      * @param context

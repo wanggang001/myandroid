@@ -3,4 +3,9 @@
     <style name="article_detail_toolbar">
         <item name="android:colorControlNormal">#FFFFFFFF</item>
     </style>
+
+    <style name="MatchMatch">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">230dp</item>
+    </style>
 </resources>

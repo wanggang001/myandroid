@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.fragment.HomeFragment"
-    android:orientation="horizontal">
-<!--    <cn.bingoogolapple.bgabanner.BGABanner-->
-<!--        android:id="@+id/banner"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="230dp"-->
-<!--        android:scaleType="fitXY"-->
-<!--        app:banner_indicatorGravity="bottom|right"-->
-<!--        app:banner_placeholderDrawable="@drawable/placeholder_banner"-->
-<!--        app:banner_tipTextColor="#CCFFFFFF"-->
-<!--        app:banner_tipTextSize="16sp"-->
-<!--        app:banner_transitionEffect="alpha" />-->
+    android:orientation="vertical"
+    tools:context=".ui.fragment.HomeFragment">
+
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/banner"
+        style="@style/MatchMatch"
+        app:banner_pageChangeDuration="1000"
+        app:banner_pointAutoPlayAble="false"
+        app:banner_pointContainerBackground="@android:color/transparent"
+        app:banner_pointDrawable="@drawable/bga_banner_selector_point_hollow"
+        app:banner_pointTopBottomMargin="15dp"
+        app:banner_transitionEffect="alpha" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/article_recycler"

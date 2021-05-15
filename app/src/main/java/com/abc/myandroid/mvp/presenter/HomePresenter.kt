@@ -14,39 +14,41 @@ import retrofit2.Response
 class HomePresenter(val homeFragment: HomeFragment) {
 
     fun requestArticle(pageNum: Int) {
-        RetrofitHelper.service.getArticles(pageNum).enqueue(object : Callback<HttpResult<ArticleResponseBody>> {
-            override fun onResponse(
-                call: Call<HttpResult<ArticleResponseBody>>,
-                response: Response<HttpResult<ArticleResponseBody>>
-            ) {
-                val list = response.body()?.data?.datas
-                homeFragment.showList(list)
-            }
+        RetrofitHelper.service.getArticles(pageNum)
+            .enqueue(object : Callback<HttpResult<ArticleResponseBody>> {
+                override fun onResponse(
+                    call: Call<HttpResult<ArticleResponseBody>>,
+                    response: Response<HttpResult<ArticleResponseBody>>
+                ) {
+                    val list = response.body()?.data?.datas
+                    homeFragment.showList(list)
+                }
 
-            override fun onFailure(call: Call<HttpResult<ArticleResponseBody>>, t: Throwable) {
-               t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<HttpResult<ArticleResponseBody>>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
     }
 
     fun requestTopArticle() {
-        RetrofitHelper.service.getTopArticles().enqueue(object : Callback<HttpResult<MutableList<Article>>> {
-            override fun onResponse(
-                call: Call<HttpResult<MutableList<Article>>>,
-                response: Response<HttpResult<MutableList<Article>>>
-            ) {
-                val list = response.body()?.data
-                list?.forEach { it.top = "1"  }
-                homeFragment.showTopList(list)
-            }
+        RetrofitHelper.service.getTopArticles()
+            .enqueue(object : Callback<HttpResult<MutableList<Article>>> {
+                override fun onResponse(
+                    call: Call<HttpResult<MutableList<Article>>>,
+                    response: Response<HttpResult<MutableList<Article>>>
+                ) {
+                    val list = response.body()?.data
+                    list?.forEach { it.top = "1" }
+                    homeFragment.showTopList(list)
+                }
 
-            override fun onFailure(call: Call<HttpResult<MutableList<Article>>>, t: Throwable) {
-                t.printStackTrace()
-            }
-        })
+                override fun onFailure(call: Call<HttpResult<MutableList<Article>>>, t: Throwable) {
+                    t.printStackTrace()
+                }
+            })
     }
 
-     fun requestBanner() {
+    fun requestBanner() {
         RetrofitHelper.service.getBanners().enqueue(object : Callback<HttpResult<List<Banner>>> {
             override fun onResponse(
                 call: Call<HttpResult<List<Banner>>>,

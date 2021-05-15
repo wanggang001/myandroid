@@ -37,22 +37,25 @@ class MainActivity : AppCompatActivity() {
         outState.putInt("index", mLastIndex)
 
     }
+
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         // 恢复recreate前的页面
         mLastIndex = savedInstanceState.getInt("index")
         switchFragment(mLastIndex)
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        mBottomNavigationView =  findViewById(R.id.navigation_bottom)
+        mBottomNavigationView = findViewById(R.id.navigation_bottom)
         initBottomNavigation()
         // 判断当前是recreate还是新启动
         if (savedInstanceState == null) {
             switchFragment(INDEX_HOMEPAGE)
         }
     }
+
     private fun initBottomNavigation() {
         mBottomNavigationView?.setOnNavigationItemSelectedListener { menuItem: MenuItem ->
             when (menuItem.itemId) {
@@ -130,7 +133,6 @@ class MainActivity : AppCompatActivity() {
         }
         return fragment
     }
-
 
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
