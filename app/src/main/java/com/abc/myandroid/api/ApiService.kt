@@ -5,6 +5,7 @@ import com.abc.myandroid.mvp.model.bean.Article
 import com.abc.myandroid.mvp.model.bean.ArticleResponseBody
 import com.abc.myandroid.mvp.model.bean.Banner
 import com.abc.myandroid.mvp.model.bean.HttpResult
+import io.reactivex.Observable
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -34,5 +35,11 @@ interface ApiService {
     @GET("article/list/{pageNum}/json")
     fun getArticles(@Path("pageNum") pageNum: Int): Call<HttpResult<ArticleResponseBody>>
 
-
+    /**
+     * 广场列表数据
+     * https://wanandroid.com/user_article/list/0/json
+     * @param page 页码拼接在url上从0开始
+     */
+    @GET("user_article/list/{page}/json")
+    fun getSquareList(@Path("page") page: Int): Call<HttpResult<ArticleResponseBody>>
 }

@@ -10,6 +10,7 @@
     android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="1dp"
+    android:layout_marginTop="1dp"
     app:cardElevation="1dp">
 
     <RelativeLayout

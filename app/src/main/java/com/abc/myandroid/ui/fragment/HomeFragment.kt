@@ -55,11 +55,18 @@ class HomeFragment : Fragment() {
         mContentBanner.setDelegate(bannerDelegate)
     }
 
-    private fun initAdapter() {
-        val layoutManager = LinearLayoutManager(context)
-        article_recycler?.layoutManager = layoutManager
-        article_recycler?.adapter = homeAdapter
+    /**
+     * LinearLayoutManager
+     */
+    private val linearLayoutManager: LinearLayoutManager by lazy {
+        LinearLayoutManager(activity)
+    }
 
+    private fun initAdapter() {
+        article_recycler.run {
+            layoutManager = linearLayoutManager
+            adapter = homeAdapter
+        }
         homeAdapter.loadMoreModule.setOnLoadMoreListener {
             page++
             presenter.requestArticle(page)
@@ -69,7 +76,7 @@ class HomeFragment : Fragment() {
 
     fun showList(articleList: List<Article>?) {
         articleList?.let { datas.addAll(it) }
-        homeAdapter.notifyDataSetChanged()
+//        homeAdapter.notifyDataSetChanged()
         homeAdapter.loadMoreModule.loadMoreComplete()
     }
 
