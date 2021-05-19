@@ -17,5 +17,8 @@ object Constant {
     /**
      * id key
      */
-    const val ID_KEY = "id"
+    const val CONTENT_CID_KEY = "cid"
+
+    const val LOGIN_KEY = "login"
+    const val HAS_NETWORK_KEY = "has_network"
 }

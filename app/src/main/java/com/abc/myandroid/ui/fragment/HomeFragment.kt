@@ -15,6 +15,7 @@ import com.abc.myandroid.mvp.model.bean.Banner
 import com.abc.myandroid.mvp.presenter.HomePresenter
 import com.abc.myandroid.ui.activity.WebViewAcitvity
 import com.abc.myandroid.utils.ImageLoader
+import com.abc.myandroid.widget.SpaceItemDecoration
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -31,6 +32,11 @@ class HomeFragment : Fragment() {
     private var page = 0
     private var bannerDates = ArrayList<Banner>()
     private val mContentBanner by lazy { requireView().findViewById<BGABanner>(R.id.banner) }
+    private val recyclerViewItemDecoration by lazy {
+        activity?.let {
+            SpaceItemDecoration(it)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +72,7 @@ class HomeFragment : Fragment() {
         article_recycler.run {
             layoutManager = linearLayoutManager
             adapter = homeAdapter
+            recyclerViewItemDecoration?.let { addItemDecoration(it) }
         }
         homeAdapter.loadMoreModule.setOnLoadMoreListener {
             page++

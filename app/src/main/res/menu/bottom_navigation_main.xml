@@ -23,7 +23,7 @@
         android:id="@+id/menu_wechat"
         android:enabled="true"
         android:icon="@mipmap/menu_wechat"
-        android:title="@string/knowledge_system"
+        android:title="@string/wechat"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_me"

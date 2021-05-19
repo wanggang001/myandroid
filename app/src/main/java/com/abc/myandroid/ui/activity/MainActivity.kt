@@ -10,6 +10,7 @@ import com.abc.myandroid.R
 import com.abc.myandroid.ext.showToast
 import com.abc.myandroid.ui.fragment.HomeFragment
 import com.abc.myandroid.ui.fragment.SquareFragment
+import com.abc.myandroid.ui.fragment.WeChatFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -71,10 +72,10 @@ class MainActivity : AppCompatActivity() {
                     switchFragment(INDEX_SQUARE)
                     return@setOnNavigationItemSelectedListener true
                 }
-//                R.id.menu_wechat -> {
-//                    switchFragment(INDEX_WE_CHAT)
-//                    return@setOnNavigationItemSelectedListener true
-//                }
+                R.id.menu_wechat -> {
+                    switchFragment(INDEX_WE_CHAT)
+                    return@setOnNavigationItemSelectedListener true
+                }
 //                R.id.menu_me -> {
 //                    switchFragment(INDEX_ME)
 //                    return@setOnNavigationItemSelectedListener true
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                 INDEX_HOMEPAGE -> fragment = HomeFragment.getInstance()
 //                INDEX_PROJECT -> fragment = ProjectFragment.getInstance()
                 INDEX_SQUARE -> fragment = SquareFragment.getInstance()
-//                INDEX_WE_CHAT -> fragment = WeChatFragment.getInstance()
+                INDEX_WE_CHAT -> fragment = WeChatFragment.getInstance()
 //                INDEX_ME -> fragment = MeFragment.getInstance()
                 else -> {
 
