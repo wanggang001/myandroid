@@ -16,6 +16,9 @@ import com.abc.myandroid.mvp.presenter.HomePresenter
 import com.abc.myandroid.ui.activity.WebViewAcitvity
 import com.abc.myandroid.utils.ImageLoader
 import com.abc.myandroid.widget.SpaceItemDecoration
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -31,7 +34,16 @@ class HomeFragment : Fragment() {
 
     private var page = 0
     private var bannerDates = ArrayList<Banner>()
-    private val mContentBanner by lazy { requireView().findViewById<BGABanner>(R.id.banner) }
+    private var mContentBanner: BGABanner? = null
+    private val bannerView by lazy {
+        layoutInflater.inflate(R.layout.item_home_banner, null).apply {
+            mContentBanner = findViewById(R.id.banner)
+            mContentBanner?.setDelegate(bannerDelegate)
+        }
+    }
+    private val refreshLayout by lazy { requireView().findViewById(R.id.refreshLayout) as RefreshLayout }
+
+
     private val recyclerViewItemDecoration by lazy {
         activity?.let {
             SpaceItemDecoration(it)
@@ -58,7 +70,25 @@ class HomeFragment : Fragment() {
                 WebViewAcitvity.start(activity, data.title, data.link)
             }
         }
-        mContentBanner.setDelegate(bannerDelegate)
+
+        homeAdapter.run {
+            addHeaderView(bannerView)
+        }
+        refreshLayout.setRefreshHeader(ClassicsHeader(activity))
+        refreshLayout.setRefreshFooter(ClassicsFooter(activity))
+        //下拉刷新
+        refreshLayout.setOnRefreshListener {
+            page = 0
+            datas.clear()
+            presenter.requestBanner()
+            presenter.requestTopArticle()
+            presenter.requestArticle(page)
+        }
+        //加载更多
+        refreshLayout.setOnLoadMoreListener {
+            page++
+            presenter.requestArticle(page)
+        }
     }
 
     /**
@@ -69,29 +99,34 @@ class HomeFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        article_recycler.run {
+        recyclerView.run {
             layoutManager = linearLayoutManager
             adapter = homeAdapter
             recyclerViewItemDecoration?.let { addItemDecoration(it) }
         }
-        homeAdapter.loadMoreModule.setOnLoadMoreListener {
-            page++
-            presenter.requestArticle(page)
-        }
+//        homeAdapter.loadMoreModule.setOnLoadMoreListener {
+//            page++
+//            presenter.requestArticle(page)
+//        }
     }
 
 
     fun showList(articleList: List<Article>?) {
         articleList?.let { datas.addAll(it) }
-//        homeAdapter.notifyDataSetChanged()
-        homeAdapter.loadMoreModule.loadMoreComplete()
+        homeAdapter.notifyDataSetChanged()
+//        homeAdapter.loadMoreModule.loadMoreComplete()
+        refreshLayout.finishRefresh()  //结束刷新
+        refreshLayout.finishLoadMore() //结束加载
     }
 
     fun showBanner(bannerList: List<Banner>?) {
         bannerDates = bannerList as ArrayList<Banner>
-        mContentBanner.setAutoPlayAble(bannerList.size > 1)
-        mContentBanner.setAdapter(bannerAdapter)
-        mContentBanner.setData(bannerList.map { it.imagePath }, bannerList.map { it.title })
+        if (bannerList.isNotEmpty()) {
+            mContentBanner?.visibility = View.VISIBLE
+        }
+        mContentBanner?.setAutoPlayAble(bannerList.size > 1)
+        mContentBanner?.setAdapter(bannerAdapter)
+        mContentBanner?.setData(bannerList.map { it.imagePath }, bannerList.map { it.title })
 
     }
 
@@ -110,7 +145,10 @@ class HomeFragment : Fragment() {
         }
 
     fun showTopList(list: List<Article>?) {
-        list.let { datas.addAll(it!!) }
+        list?.let {
+            datas.addAll(0, it)
+            homeAdapter.notifyDataSetChanged()
+        }
     }
 }
 

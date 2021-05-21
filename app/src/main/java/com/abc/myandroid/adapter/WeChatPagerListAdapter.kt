@@ -36,7 +36,7 @@ class WeChatPagerListAdapter(articleList: MutableList<Article>) : BaseQuickAdapt
         if (!TextUtils.isEmpty(item.envelopePic)) {
             holder.getView<ImageView>(R.id.iv_article_thumbnail)
                 .visibility = View.VISIBLE
-            context?.let {
+            context.let {
                 ImageLoader.load(it, item.envelopePic, holder.getView(R.id.iv_article_thumbnail))
             }
         } else {

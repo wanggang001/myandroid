@@ -13,6 +13,7 @@ import com.abc.myandroid.mvp.model.bean.Article
 import com.abc.myandroid.mvp.presenter.WeChatListPresenter
 import com.abc.myandroid.ui.activity.WebViewAcitvity
 import com.abc.myandroid.widget.SpaceItemDecoration
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
@@ -34,6 +35,8 @@ class WeChatListFragment : Fragment() {
 
     private var page = 0
     private var cid = 408
+
+    private val refreshLayout by lazy { requireView().findViewById(R.id.refreshLayout) as RefreshLayout }
 
     /**
      * RecyclerView Divider
@@ -63,6 +66,15 @@ class WeChatListFragment : Fragment() {
                 WebViewAcitvity.start(activity, data.title, data.link)
             }
         }
+
+        refreshLayout.setOnRefreshListener {
+            page = 0
+            presenter.requestWXChapters(page, cid)
+        }
+        refreshLayout.setOnLoadMoreListener {
+            page++
+            presenter.requestWXChapters(page, cid)
+        }
     }
 
     private val linearLayoutManager: LinearLayoutManager by lazy {
@@ -70,20 +82,18 @@ class WeChatListFragment : Fragment() {
     }
 
     private fun initAdapter() {
-        article_recycler.run {
+        recyclerView.run {
             layoutManager = linearLayoutManager
             adapter = wechatlistAdapter
             recyclerViewItemDecoration?.let { addItemDecoration(it) }
-        }
-        wechatlistAdapter.loadMoreModule.setOnLoadMoreListener {
-            page++
-            presenter.requestWXChapters(page, cid)
         }
     }
 
     fun showWxList(list: MutableList<Article>?) {
         list?.let { datas.addAll(it) }
-        wechatlistAdapter.loadMoreModule.loadMoreComplete()
+        wechatlistAdapter.notifyDataSetChanged()
+        refreshLayout.finishRefresh()  //结束刷新
+        refreshLayout.finishLoadMore() //结束加载
     }
 
 }

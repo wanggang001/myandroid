@@ -12,6 +12,9 @@ import com.abc.myandroid.mvp.model.bean.Article
 import com.abc.myandroid.mvp.presenter.SquarePresenter
 import com.abc.myandroid.ui.activity.WebViewAcitvity
 import com.abc.myandroid.widget.SpaceItemDecoration
+import com.scwang.smart.refresh.footer.ClassicsFooter
+import com.scwang.smart.refresh.header.ClassicsHeader
+import com.scwang.smart.refresh.layout.api.RefreshLayout
 import kotlinx.android.synthetic.main.fragment_square.*
 
 
@@ -25,6 +28,8 @@ class SquareFragment : Fragment() {
     private val presenter by lazy { SquarePresenter(this) }
     private val homeAdapter by lazy { HomeAdapter(datas) }
     private var page = 0
+
+    private val refreshLayout by lazy { requireView().findViewById(R.id.refreshLayout) as RefreshLayout }
 
     /**
      * RecyclerView Divider
@@ -46,28 +51,47 @@ class SquareFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
         presenter.requestSquare(page)
+
+        refreshLayout.setRefreshHeader(ClassicsHeader(activity))
+        refreshLayout.setRefreshFooter(ClassicsFooter(activity))
+
+        //下拉刷新
+        refreshLayout.setOnRefreshListener {
+            page = 0
+            datas.clear()
+            presenter.requestSquare(page)
+        }
+        //加载更多
+        refreshLayout.setOnLoadMoreListener {
+            page++
+            presenter.requestSquare(page)
+        }
     }
 
     private fun initAdapter() {
         val layoutManager = LinearLayoutManager(context)
-        article_recycler?.layoutManager = layoutManager
-        article_recycler?.adapter = homeAdapter
-        article_recycler.apply { recyclerViewItemDecoration?.let { addItemDecoration(it) } }
+        recyclerView?.layoutManager = layoutManager
+        recyclerView?.adapter = homeAdapter
+
+        recyclerView.apply { recyclerViewItemDecoration?.let { addItemDecoration(it) } }
         homeAdapter.setOnItemClickListener { adapter, view, position ->
             if (datas.size != 0) {
                 val data = datas[position]
                 WebViewAcitvity.start(activity, data.title, data.link)
             }
         }
-        homeAdapter.loadMoreModule.setOnLoadMoreListener {
-            page++
-            presenter.requestSquare(page)
-        }
+//        homeAdapter.loadMoreModule.setOnLoadMoreListener {
+//            page++
+//            presenter.requestSquare(page)
+//        }
     }
 
     fun showList(list: MutableList<Article>?) {
-        list.let { datas.addAll(it!!) }
-        homeAdapter.loadMoreModule.loadMoreComplete()
+        list?.let { datas.addAll(it) }
+        homeAdapter.notifyDataSetChanged()
+//        homeAdapter.loadMoreModule.loadMoreComplete()
+        refreshLayout.finishRefresh()  //结束刷新
+        refreshLayout.finishLoadMore() //结束加载
     }
 
 
